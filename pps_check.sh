@@ -21,10 +21,10 @@ sms=/var/argus/sms.py
 # pps  threshold
 threshold=20000
 
-# email ddresses, twitter, mobile numbers for notifications
-mail_dest='address@domain.com address2@domain2.co.za 
+# email addresses and mobile numbers for notifications
+mail_dest='address@domain.com address2@domain2.co.za' 
 # numbers 
-mobile_dest='12345678,3456789
+mobile_dest='12345678,3456789'
 
 # from field that will appear in the recieved message
 email_from="From:sourceaddress@domain.com"
@@ -61,12 +61,12 @@ pps_in_host_2_int=$(echo $pps_in_host_2 | $shell | cut -d" " -f4)
 pps_out_host_2="$cmd $version $comm $host_2 $oid_pps_out$host_2_intf"
 pps_out_host_2_int=$(echo $pps_out_host_2 | $shell | cut -d" " -f4)
 
-# build meesages to be sent via sms
-# host_1 inound pps
+# build mesages to be sent via sms
+# host_1 inbound ppsx
 mobile_msg_in_1=$(echo "'"'- Threshold Alert -' $host_1 '- Inbound' $pps_in_host_1_int'/pps'"'")
 # host_1 outbound pps
 mobile_msg_out_1=$(echo "'"'- Threshold Alert -' $host_1 '- Outbound' $pps_out_host_1_int'/pps'"'")
-# host_2 inound pps
+# host_2 inbound pps
 mobile_msg_in_2=$(echo "'"'- Threshold Alert -' $host_2 '- Inbound' $pps_in_host_2_int'/pps'"'")
 # host_2 outbound pps
 mobile_msg_out_2=$(echo "'"'- Threshold Alert -' $host_2 '- Outbound' $pps_out_host_2_int'/pps'"'")
@@ -75,33 +75,36 @@ mobile_msg_out_2=$(echo "'"'- Threshold Alert -' $host_2 '- Outbound' $pps_out_h
 # check pps inbound value on host_1, if value above threshold, generate an alert
 if [[ $(echo $pps_in_host_1_int) -ge $threshold ]];
 then
-  # when threshold is exceeded, notify via mail
-  echo "- Threshold Alert" | mail -s "- PPS Threshold Alert - $host_1 - Inbound $pps_in_host_1_int/pps" $mail_dest -a $email_from
   # when threshold is matched or exceeded, notify via email
+  echo "- Threshold Alert" | mail -s "- PPS Threshold Alert - $host_1 - Inbound $pps_in_host_1_int/pps" $mail_dest -a $email_from
+  # when threshold is matched or exceeded, notify via sms
   echo $python $sms $mobile_msg_in_1 $mobile_dest | $shell >/dev/null 2>&1
 fi
 
 # check pps outbound value on host_1, if value above threshold, generate an alert
 if [[ $(echo $pps_out_host_1_int) -ge $threshold ]];
 then
-  echo "- Threshold Alert" | mail -s "- PPS Threshold Alert - $host_1 - Outbound $pps_out_host_1_int/pps" $mail_dest -a $email_from
   # when threshold is matched or exceeded, notify via email
+  echo "- Threshold Alert" | mail -s "- PPS Threshold Alert - $host_1 - Outbound $pps_out_host_1_int/pps" $mail_dest -a $email_from
+  # when threshold is matched or exceeded, notify via sms
   echo $python $sms $mobile_msg_out_1 $mobile_dest | $shell >/dev/null 2>&1
 fi
 
 # check pps inbound value on host_2, if value above threshold, generate an alert
 if [[ $(echo $pps_in_host_2_int) -ge $threshold ]];
 then
-  echo "- Threshold Alert" | mail -s "- PPS Threshold Alert - $host_2 - Inbound $pps_in_host_2_int/pps" $mail_dest -a $email_from
   # when threshold is matched or exceeded, notify via email
+  echo "- Threshold Alert" | mail -s "- PPS Threshold Alert - $host_2 - Inbound $pps_in_host_2_int/pps" $mail_dest -a $email_from
+  # when threshold is matched or exceeded, notify via sms
   echo $python $sms $mobile_msg_in_2 $mobile_dest | $shell >/dev/null 2>&1
 fi
 
 # check pps outbound value on host_2, if value above threshold, generate an alert
 if [[ $(echo $pps_out_host_2_int) -ge $threshold ]];
 then
-  echo "- Threshold Alert" | mail -s "- PPS Threshold Alert - $host_2 - Outbound $pps_out_host_2_int/pps" $mail_dest -a $email_from
   # when threshold is matched or exceeded, notify via email
+  echo "- Threshold Alert" | mail -s "- PPS Threshold Alert - $host_2 - Outbound $pps_out_host_2_int/pps" $mail_dest -a $email_from
+  # when threshold is matched or exceeded, notify via sms
   echo $python $sms $mobile_msg_out_2 $mobile_dest | $shell >/dev/null 2>&1
 fi
 
